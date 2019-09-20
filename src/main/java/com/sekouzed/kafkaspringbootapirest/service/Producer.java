@@ -1,33 +1,30 @@
 package com.sekouzed.kafkaspringbootapirest.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ExecutionException;
+import java.util.Properties;
 
 @Service
 public class Producer {
-
-    private static final Logger logger = LoggerFactory.getLogger(Producer.class);
     private static final String TOPIC = "traca";
+    private Properties props;
+    private KafkaProducer<String, String> producer;
 
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    public Producer() {
+        props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("acks", "all");
+        props.put("retries", "0");
+        props.put("delivery.timeout.ms", "12000");
+        props.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        producer = new KafkaProducer<>(props);
+    }
 
     public void sendMessage(String message) {
-        try {
-            SendResult<String, String> stringStringSendResult = this.kafkaTemplate.send(TOPIC, message).get();
-            logger.info(String.format("#### -> Producing message -> %s", message));
-        } catch (Exception e) {
-
-
-            logger.error(String.format("#### -> NotProducing message -> %s", message));
-
-            e.printStackTrace();
-        }
+        ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC,message);
+        producer.send(record, new ProducerCallback(message));
+        //producer.close();
     }
 }
