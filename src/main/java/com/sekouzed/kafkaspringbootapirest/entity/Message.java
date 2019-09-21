@@ -5,9 +5,6 @@ public class Message {
     private String subject;
     private String content;
 
-    public Message() {
-    }
-
     public Message( String subject, String content) {
         this.subject = subject;
         this.content = content;
