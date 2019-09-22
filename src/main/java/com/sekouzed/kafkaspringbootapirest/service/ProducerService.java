@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,14 @@ public class ProducerService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProducerService.class);
 
-    private static final String TOPIC = "traca";
+    @Value(value = "${app.kafka.topic}")
+    private String topic;
 
     @Autowired
     private KafkaTemplate<String, Message> kafkaTemplate;
 
     public Message send(Message sendMessage) {
-        ProducerRecord<String, Message> record = new ProducerRecord<>(TOPIC, sendMessage);
+        ProducerRecord<String, Message> record = new ProducerRecord<>(topic, sendMessage);
 
         this.kafkaTemplate.send(record).addCallback(new ListenableFutureCallback<SendResult<String, Message>>() {
 
