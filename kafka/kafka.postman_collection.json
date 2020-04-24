@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "363f19eb-49d9-4278-aa86-1eebf3c95098",
+		"name": "kafka",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "send_message",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3435f66d-c408-4611-aab8-b9427ddd8c4e",
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set(\"index\",  parseInt(pm.globals.get(\"index\") + 1) )"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"subject\": \"message_{{index}}\",\n\t\"content\": \"Lorem ipsum\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:9000/messages/publish",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"messages",
+						"publish"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
